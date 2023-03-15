@@ -3,6 +3,22 @@ import Issues from "./pages/Issues";
 import Issue from "./pages/Issue";
 import AddIssue from "./pages/AddIssue";
 
+async function fetchWithError(url, options) {
+  const response = await fetch(url, options);
+
+  if (response.status !== 200) {
+    throw new Error('Error in request.');
+  }
+
+  const result = await response.json();
+
+  if (result.error) {
+    throw new Error(result.error);
+  }
+
+  return result;
+}
+
 function App() {
   const isRootPath = useMatch({ path: "/", end: true });
   return (
