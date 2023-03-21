@@ -13,16 +13,10 @@ function useIssueData(issueNumber) {
 }
 
 function useIssueComments(issueNumber) {
-  return useQuery(['issues', issueNumber, 'comments'], async ({ signal }) => {
-    const response = fetch(`/api/issues/${issueNumber}/comments`, { signal }).then(
+  return useQuery(['issues', issueNumber, 'comments'], ({ signal }) => {
+    return fetch(`/api/issues/${issueNumber}/comments`, { signal }).then(
       (res) => res.json()
     );
-
-    const result = await response;
-
-    console.log(`useIssueComments: ${result}`);
-
-    return result;
   });
 }
 
