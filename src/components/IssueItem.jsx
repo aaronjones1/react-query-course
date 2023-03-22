@@ -28,7 +28,7 @@ export function IssueItem({
         );
         queryClient.prefetchQuery(
           ['issues', number.toString(), 'comments'],
-          () => fetch(`/api/issues/${number}/comments`)
+          () => fetchWithError(`/api/issues/${number}/comments`)
         );
       }}
     >

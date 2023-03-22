@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
-import fetchWithError from '../helpers/fetchWithError';
 import { IssueItem } from './IssueItem';
+import fetchWithError from '../helpers/fetchWithError';
 import Loader from './Loader';
 
 export default function IssuesList({ labels, status }) {
@@ -10,9 +10,9 @@ export default function IssuesList({ labels, status }) {
     ['issues', { labels, status }],
     async ({ signal }) => {
       const statusString = status ? `&status=${status}` : '';
-      const labelString = labels.map((label) => `labels[]=${label}`).join('&');
+      const labelsString = labels.map((label) => `labels[]=${label}`).join('&');
       const results = await fetchWithError(
-        `/api/issues?${labelString}${statusString}`,
+        `/api/issues?${labelsString}${statusString}`,
         {
           signal,
         }
@@ -25,7 +25,6 @@ export default function IssuesList({ labels, status }) {
       return results;
     }
   );
-
   const [searchValue, setSearchValue] = useState('');
 
   const searchQuery = useQuery(
@@ -50,7 +49,7 @@ export default function IssuesList({ labels, status }) {
         <label htmlFor='search'>Search Issues</label>
         <input
           type='search'
-          placeholder='search'
+          placeholder='Search'
           name='search'
           id='search'
           onChange={(event) => {
@@ -60,7 +59,9 @@ export default function IssuesList({ labels, status }) {
           }}
         />
       </form>
-      <h2>Issues List {issuesQuery.isFetching ? <Loader /> : null}</h2>
+      <h2>
+        Issues List {issuesQuery.fetchStatus === 'fetching' ? <Loader /> : null}
+      </h2>
       {issuesQuery.isLoading ? (
         <p>Loading...</p>
       ) : issuesQuery.isError ? (
@@ -84,6 +85,7 @@ export default function IssuesList({ labels, status }) {
         </ul>
       ) : (
         <>
+          <h2>Search Results</h2>
           {searchQuery.isLoading ? (
             <p>Loading...</p>
           ) : (

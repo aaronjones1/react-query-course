@@ -1,8 +1,8 @@
 import { useQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
-import { IssueHeader } from './IssueHeader';
-import { useUserData } from '../helpers/useUserData';
 import { relativeDate } from '../helpers/relativeDate';
+import { useUserData } from '../helpers/useUserData';
+import { IssueHeader } from './IssueHeader';
 
 function useIssueData(issueNumber) {
   return useQuery(['issues', issueNumber], ({ signal }) => {
@@ -27,14 +27,14 @@ function Comment({ comment, createdBy, createdDate }) {
     return (
       <div className='comment'>
         <div>
-          <div className='comment-header'>Loading comment...</div>
+          <div className='comment-header'>Loading...</div>
         </div>
       </div>
     );
 
   return (
     <div className='comment'>
-      <img src={userQuery.data.profilePictureUrl} alt='Commenter avatar' />
+      <img src={userQuery.data.profilePictureUrl} alt='Commenter Avatar' />
       <div>
         <div className='comment-header'>
           <span>{userQuery.data.name}</span> commented{' '}
@@ -51,17 +51,30 @@ export default function IssueDetails() {
   const issueQuery = useIssueData(number);
   const commentsQuery = useIssueComments(number);
 
+  if (!commentsQuery.isLoading) {
+    console.log(commentsQuery.data);
+  }
+
   return (
     <div className='issue-details'>
       {issueQuery.isLoading ? (
-        <p>Loading...</p>
+        <p>Loading issue...</p>
       ) : (
         <>
           <IssueHeader {...issueQuery.data} />
           <main>
             <section>
+              {/* {!commentsQuery.isLoading ? (
+                Array.isArray(commentsQuery.data) ? (
+                  <p>commentsQuery.data is an array.</p>
+                ) : (
+                  <p>commentsQuery.data is not an array.</p>
+                )
+              ) : (
+                <p>Loading commentsQuery.</p>
+              )} */}
               {commentsQuery.isLoading ? (
-                <p>Loading comments...</p>
+                <p>Loading...</p>
               ) : (
                 commentsQuery.data?.map((comment) => (
                   <Comment key={comment.id} {...comment} />
